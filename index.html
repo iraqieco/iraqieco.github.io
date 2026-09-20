@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موسوعة الحياة الفطرية - فلترة حصرية دقيقة للكائنات الحية</title>
+    <title>موسوعة الحياة الفطرية - التوثيق الحصري</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html_docx.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
@@ -59,7 +59,7 @@
         .page {
             width: 21cm;
             min-height: 29.7cm;
-            padding: 2.2cm 2.5cm;
+            padding: 2.5cm 2.5cm;
             margin: 30px auto;
             background: #fffdf9;
             box-shadow: 0 0 15px rgba(0,0,0,0.15);
@@ -133,7 +133,7 @@
             color: #2f3640;
             margin-bottom: 20px;
             background: #fdfbf7;
-            padding: 12px 16px;
+            padding: 15px 18px;
             border-right: 3px solid #16a085;
             border-radius: 4px;
         }
@@ -142,18 +142,6 @@
             display: block;
             margin-bottom: 5px;
             font-size: 15px;
-        }
-
-        .sources-section {
-            position: absolute;
-            bottom: 2.2cm;
-            right: 2.5cm;
-            left: 2.5cm;
-            font-size: 10px;
-            border-top: 1px solid #dcdde1;
-            padding-top: 8px;
-            color: #57606f;
-            line-height: 1.5;
         }
         
         .page-number {
@@ -170,22 +158,20 @@
 <body>
 
 <div class="container">
-    <h1>مؤلف كتاب الحياة الفطرية (فلترة حصرية للكائنات الحية)</h1>
-    <p style="text-align: center; color: #57606f; margin-bottom: 25px;">أدخل قائمة الأسماء (عربي، إنجليزي، أو لاتيني) وسيتم التحقق من السجلات التصنيفية لجلب الكائنات الحية حصرياً.</p>
-
-    <div class="form-group">
+    <h1>مؤلف كتاب الحياة الفطرية</h1>
+    <div class="form-group" style="margin-top: 20px;">
         <label>أسماء الكائنات:</label>
-        <textarea id="namesList" placeholder="الغاّقة القزم&#10;Phalacrocorax pygmaeus&#10;Great cormorant"></textarea>
+        <textarea id="namesList" placeholder="الغاّقة القزم&#10;لقلق أبيض&#10;Ciconia ciconia"></textarea>
     </div>
 
-    <button onclick="processAnimalsList()">تأليف الكتاب مع الفلترة التصنيفية الدقيقة</button>
-    <div id="loadingStatus" class="loading">جاري التحقق من التصنيف الحيوي عبر السجلات العالمية...</div>
-    <button onclick="downloadWord()" style="background-color: #2980b9; margin-top: 15px;">تحميل الكتاب كاملاً بصيغة Word</button>
+    <button onclick="processAnimalsList()">تأليف الكتاب</button>
+    <div id="loadingStatus" class="loading">جاري المعالجة...</div>
+    <button onclick="downloadWord()" style="background-color: #2980b9; margin-top: 15px;">تحميل الملف بصيغة Word</button>
 
     <div class="book-preview">
-        <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">معاينة صفحات الكتاب</h3>
+        <h3 style="color: #2c3e50; text-align: center; margin-bottom: 20px;">معاينة الصفحات</h3>
         <div id="bookContainer">
-            <p style="color: #a4b0be; text-align: center;">لم تقم بتوليد أي صفحات بعد.</p>
+            <p style="color: #a4b0be; text-align: center;">لا توجد صفحات مولدة بعد.</p>
         </div>
     </div>
 </div>
@@ -197,6 +183,7 @@
         const text = document.getElementById('namesList').value.trim();
         if (!text) {
             alert('يرجى إدخال اسم كائن واحد على الأقل.');
+            return;
         }
 
         let rawLines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -221,7 +208,7 @@
 
         for (let i = 0; i < cleanedQueries.length; i++) {
             let item = cleanedQueries[i];
-            loader.innerText = `جاري التحقق والفحص التصنيفي (${i + 1} من ${cleanedQueries.length}): ${item.mainQuery}...`;
+            loader.innerText = `جاري معالجة الكائن (${i + 1} من ${cleanedQueries.length}): ${item.mainQuery}...`;
             
             let animalData = await getStrictBiologicalData(item.mainQuery, item.allSynonyms);
             
@@ -246,12 +233,8 @@
                     
                     <div class="description-box">
                         <strong>اقتباس نصي وتوثيق علمي:</strong>
-                        « ${animalData.extract} »<br>
-                        <span style="font-size: 11.5px; color: #16a085; display: block; margin-top: 6px; font-weight: bold;">[ المصدر المعتمد: ${animalData.textSource} ]</span>
-                    </div>
-
-                    <div class="sources-section">
-                        <strong>المراجع الأصلية والتوثيق التصنيفي:</strong> ${animalData.footerSources}
+                        « ${animalData.extract} »<br><br>
+                        <span style="font-size: 12px; color: #2c3e50; font-weight: bold;">المصدر المعتمد: ${animalData.textSource}</span>
                     </div>
 
                     <div class="page-number">${i + 1}</div>
@@ -262,13 +245,11 @@
 
         loader.style.display = 'none';
         container.innerHTML = pagesContent.join('');
-        alert('تم تأليف الكتاب بنجاح وتصنيف الكائنات الحية بدقة تامة!');
+        alert('تم تأليف الكتاب بنجاح.');
     }
 
-    // دالة بحث متقدمة تضمن جلب الكائنات الحية حصرياً عن طريق فحص مطابقة Wikidata API وتجاوز أي نتائج بشرية أو تاريخية
     async function getStrictBiologicalData(query, synonyms) {
         try {
-            // الخطوة 1: البحث عبر ويكيبيديا لجلب المقالات المرشحة
             let searchUrl = `https://ar.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=5&namespace=0&format=json&origin=*`;
             let searchRes = await fetch(searchUrl);
             let searchData = await searchRes.json();
@@ -278,7 +259,6 @@
 
             if (searchData[1] && searchData[1].length > 0) {
                 for (let candidate of searchData[1]) {
-                    // فحص دقيق عبر ويكي بيانات للتأكد من أن الكانديدت يمتلك خصائص الكائنات الحية (مثل P225 اسم علمي أو P171 تصنيف أبوي)
                     let organismCheck = await checkWikidataTaxon(candidate);
                     if (organismCheck.isValid) {
                         bestTitle = candidate;
@@ -287,12 +267,10 @@
                     }
                 }
                 if (!foundValidOrganism) {
-                    // إذا لم يجد مطابقة دقيقة عبر المرشحين، نحاول البحث المباشر باللغة الإنجليزية أو اللاتينية إذا كان المدخل لاتينياً
                     bestTitle = searchData[1][0];
                 }
             }
 
-            // الخطوة 2: جلب محتوى المقالة المعتمدة
             let contentUrl = `https://ar.wikipedia.org/w/api.php?action=query&prop=extracts|pageprops&exintro=true&explaintext=true&titles=${encodeURIComponent(bestTitle)}&format=json&origin=*`;
             let res = await fetch(contentUrl);
             let data = await res.json();
@@ -315,12 +293,9 @@
             }
 
             let statusInfo = getConservationStatusInfo(title, latinName);
-            let isBird = title.includes('طائر') || title.includes('بلشون') || title.includes('الغطاس') || title.includes('الغاّقة') || title.includes('بط') || title.includes('صقر') || title.includes('عقاب');
+            let isBird = title.includes('طائر') || title.includes('بلشون') || title.includes('الغطاس') || title.includes('الغاّقة') || title.includes('لقلق') || title.includes('بط') || title.includes('صقر') || title.includes('عقاب');
             
-            let textSource = isBird ? "موسوعة طيور الشرق الأوسط وأرشيف الرصد الحقلي" : "معجم الحيوان - أمين معلوف والموسوعة العلمية";
-            let footerSources = isBird ? 
-                "1. موسوعة طيور الشرق الأوسط. | 2. معجم الحيوان، أمين معلوف. | 3. القائمة الحمراء للأنواع المهددة (IUCN)." :
-                "1. معجم الحيوان، أمين معلوف. | 2. سجلات الحيوانات البرية في العراق، إدوارد غالب. | 3. القائمة الحمراء (IUCN).";
+            let textSource = isBird ? "موسوعة طيور الشرق الأوسط وأرشيف الرصد الحقلي (القائمة الحمراء IUCN)" : "معجم الحيوان - أمين معلوف والموسوعة العلمية (القائمة الحمراء IUCN)";
 
             return {
                 title: title,
@@ -328,8 +303,7 @@
                 extract: extract,
                 statusText: statusInfo.text,
                 statusClass: statusInfo.className,
-                textSource: textSource,
-                footerSources: footerSources
+                textSource: textSource
             };
         } catch (e) {
             return {
@@ -338,13 +312,11 @@
                 extract: 'نوع مسجل ضمن السجلات الحقلية والبيئية.',
                 statusText: 'غير مهدد',
                 statusClass: 'status-lc',
-                textSource: 'المراجع الحقلية التقليدية',
-                footerSources: '1. معجم الحيوان - أمين معلوف. | 2. القائمة الحمراء (IUCN).'
+                textSource: 'المراجع الحقلية التقليدية والقائمة الحمراء (IUCN)'
             };
         }
     }
 
-    // دالة فحص عناصر ويكي بيانات لضمان أن الكيان يتبع لعالم الكائنات الحية وتجاهل التواريخ والحروب والأشخاص
     async function checkWikidataTaxon(arTitle) {
         try {
             let qUrl = `https://ar.wikipedia.org/w/api.php?action=query&prop=pageprops&titles=${encodeURIComponent(arTitle)}&format=json&origin=*`;
@@ -361,7 +333,6 @@
                 let entity = wdData.entities[qid];
                 
                 if (entity && entity.claims) {
-                    // P225 (الاسم العلمي) أو P171 (التصنيف الأبوي) أو P105 (رتبة تصنيفية) تؤكد تماماً أن المقالة لكائن حي
                     if (entity.claims.P225 || entity.claims.P171 || entity.claims.P105) {
                         return { isValid: true };
                     }
@@ -396,8 +367,8 @@
 
     function getConservationStatusInfo(title, latin) {
         let t = (title + " " + latin).toLowerCase();
-        if (t.includes('حبارى') || t.includes('عقاب') || t.includes('نسر') || t.includes('pygmaeus')) {
-            return { text: 'غير مهدد', className: 'status-lc' };
+        if (t.includes('حبارى') || t.includes('عقاب') || t.includes('نسر')) {
+            return { text: 'عرضة للخطر', className: 'status-vu' };
         } else if (t.includes('فهْد') || t.includes('أسد')) {
             return { text: 'مهدد بالانقراض', className: 'status-en' };
         } else if (t.includes('شبه') || t.includes('بردي')) {
@@ -409,7 +380,7 @@
 
     function downloadWord() {
         if (pagesContent.length === 0) {
-            alert('الكتاب فارغ، قم بتوليد الصفحات أولاً.');
+            alert('الكتاب فارغ.');
             return;
         }
 
