@@ -59,7 +59,7 @@
         .page {
             width: 21cm;
             min-height: 29.7cm;
-            padding: 2.5cm 2.5cm;
+            padding: 2.2cm 2.5cm;
             margin: 30px auto;
             background: #fffdf9;
             box-shadow: 0 0 15px rgba(0,0,0,0.15);
@@ -142,6 +142,18 @@
             display: block;
             margin-bottom: 5px;
             font-size: 15px;
+        }
+
+        .sources-footer {
+            position: absolute;
+            bottom: 2.2cm;
+            right: 2.5cm;
+            left: 2.5cm;
+            font-size: 10.5px;
+            border-top: 1px solid #bdc3c7;
+            padding-top: 8px;
+            color: #57606f;
+            line-height: 1.6;
         }
         
         .page-number {
@@ -233,8 +245,12 @@
                     
                     <div class="description-box">
                         <strong>اقتباس نصي وتوثيق علمي:</strong>
-                        « ${animalData.extract} »<br><br>
-                        <span style="font-size: 12px; color: #2c3e50; font-weight: bold;">المصدر المعتمد: ${animalData.textSource}</span>
+                        « ${animalData.extract} »
+                    </div>
+
+                    <div class="sources-footer">
+                        1. ${animalData.source1}<br>
+                        2. ${animalData.source2}
                     </div>
 
                     <div class="page-number">${i + 1}</div>
@@ -295,7 +311,8 @@
             let statusInfo = getConservationStatusInfo(title, latinName);
             let isBird = title.includes('طائر') || title.includes('بلشون') || title.includes('الغطاس') || title.includes('الغاّقة') || title.includes('لقلق') || title.includes('بط') || title.includes('صقر') || title.includes('عقاب');
             
-            let textSource = isBird ? "موسوعة طيور الشرق الأوسط وأرشيف الرصد الحقلي (القائمة الحمراء IUCN)" : "معجم الحيوان - أمين معلوف والموسوعة العلمية (القائمة الحمراء IUCN)";
+            let s1 = isBird ? "موسوعة طيور الشرق الأوسط وأرشيف الرصد الحقلي" : "معجم الحيوان - أمين معلوف والموسوعة العلمية";
+            let s2 = "القائمة الحمراء للأنواع المهددة بالانقراض (IUCN)";
 
             return {
                 title: title,
@@ -303,7 +320,8 @@
                 extract: extract,
                 statusText: statusInfo.text,
                 statusClass: statusInfo.className,
-                textSource: textSource
+                source1: s1,
+                source2: s2
             };
         } catch (e) {
             return {
@@ -312,7 +330,8 @@
                 extract: 'نوع مسجل ضمن السجلات الحقلية والبيئية.',
                 statusText: 'غير مهدد',
                 statusClass: 'status-lc',
-                textSource: 'المراجع الحقلية التقليدية والقائمة الحمراء (IUCN)'
+                source1: 'المراجع الحقلية التقليدية',
+                source2: 'القائمة الحمراء (IUCN)'
             };
         }
     }
