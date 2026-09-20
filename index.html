@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة تأليف كتب الحياة الفطرية - عراقي إيكو</title>
+    <!-- مكتبة لتصدير الملفات إلى صيغة Word -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html_docx.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <style>
+        body {
+            font-family: 'Traditional Arabic', 'Amiri', serif, Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        textarea {
+            height: 100px;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #219653;
+        }
+        /* تصميم صفحة الكتاب المعاينة */
+        .book-preview {
+            margin-top: 40px;
+            border-top: 2px dashed #ccc;
+            padding-top: 20px;
+        }
+        .page {
+            width: 21cm;
+            min-height: 29.7cm;
+            padding: 2.5cm;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+            position: relative;
+            page-break-after: always;
+        }
+        .header-logo {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .animal-title {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        .animal-latin {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .image-placeholder {
+            width: 100%;
+            height: 250px;
+            border: 2px dashed #b2bec3;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #636e72;
+            margin: 20px 0;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        .wiki-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .wiki-table th, .wiki-table td {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            text-align: right;
+        }
+        .wiki-table th {
+            background-color: #f2f2f2;
+            width: 30%;
+        }
+        .description-text {
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+        .sources-section {
+            margin-top: 30px;
+            font-size: 13px;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+        }
+        .page-number {
+            position: absolute;
+            bottom: 1.5cm;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>مُصنّف كتب الحياة الفطرية</h1>
+    <p style="text-align: center; color: #666;">أدخل اسم الحيوان وسيقوم النظام بتأليف الصفحات وتنسيقها تلقائياً.</p>
+
+    <div class="form-group">
+        <label>اسم الحيوان بالعربية:</label>
+        <input type="text" id="arName" placeholder="مثال: التודري الجزري / الورل العراقي">
+    </div>
+
+    <div class="form-group">
+        <label>الاسم العلمي (باللاتينية):</label>
+        <input type="text" id="laName" placeholder="مثال: Varanus euphraticus">
+    </div>
+
+    <div class="form-group">
+        <label>التصنيف العلمي (حسب جدول ويكيبيديا - مفصولة بفاصلة مثل: النطاق: حقيقيات النوى, المملكة: الحيوانات):</label>
+        <input type="text" id="taxData" placeholder="المملكة: الحيوانات, الشعبة: الحبليات, الطائفة: الزواحف, الرتبة: الحرشفيات">
+    </div>
+
+    <div class="form-group">
+        <label>الوصف السلوكي والبيئي:</label>
+        <textarea id="descText" placeholder="اكتب أو الصق الوصف الشامل للحيوان وموطنه في البيئة العراقية..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>المصادر والمراجع العلمية:</label>
+        <input type="text" id="sourcesText" placeholder="اكتب المصادر مفصولة بفواصل أو أسطر">
+    </div>
+
+    <button onclick="generateBookPage()">إضافة الصفحة إلى الكتاب</button>
+    <button onclick="downloadWord()" style="background-color: #2980b9; margin-top: 10px;">تحميل الكتاب كاملًا (ملف Word)</button>
+
+    <div class="book-preview">
+        <h3>معاينة صفحات الكتاب:</h3>
+        <div id="bookContainer">
+            <p style="color: #888; text-align: center;">لم يتم إضافة صفحات بعد.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    let pageCounter = 1;
+    let pagesContent = [];
+
+    function generateBookPage() {
+        const ar = document.getElementById('arName').value.trim();
+        const la = document.getElementById('laName').value.trim();
+        const tax = document.getElementById('taxData').value.trim();
+        const desc = document.getElementById('descText').value.trim();
+        const sources = document.getElementById('sourcesText').value.trim();
+
+        if (!ar || !la) {
+            alert('يرجى على الأقل إدخال الاسم العربي واللاتيني للحيوان.');
+            return;
+        }
+
+        // بناء جدول ويكيبيديا المصغر
+        let tableRows = '';
+        if (tax) {
+            const pairs = tax.split(',');
+            pairs.forEach(pair => {
+                const parts = pair.split(':');
+                if(parts.length === 2) {
+                    tableRows += `<tr><th>${parts[0].trim()}</th><td>${parts[1].trim()}</td></tr>`;
+                }
+            });
+        }
+
+        // هيكل الصفحة الواحدة
+        let pageHTML = `
+            <div class="page">
+                <div class="header-logo">عراقي إيكو - Iraqi Eco</div>
+                <h2 class="animal-title">${ar}</h2>
+                <div class="animal-latin">${la}</div>
+                
+                <div class="image-placeholder">[ضع صورة الحيوان هنا]</div>
+
+                ${tableRows ? `<table class="wiki-table">${tableRows}</table>` : ''}
+                
+                <div class="description-text">
+                    <strong>الوصف والبيئة:</strong><br>
+                    ${desc || 'لا يوجد وصف مضاف.'}
+                </div>
+
+                <div class="sources-section">
+                    <strong>المصادر والمراجع:</strong><br>
+                    ${sources || 'مراجع عامة - عراقي إيكو'}
+                </div>
+
+                <div class="page-number">صفحة ${pageCounter}</div>
+            </div>
+        `;
+
+        pagesContent.push(pageHTML);
+        renderPreview();
+        pageCounter++;
+
+        // تفريغ الحقول لإضافة حيوان جديد
+        document.getElementById('arName').value = '';
+        document.getElementById('laName').value = '';
+        document.getElementById('taxData').value = '';
+        document.getElementById('descText').value = '';
+        document.getElementById('sourcesText').value = '';
+    }
+
+    function renderPreview() {
+        const container = document.getElementById('bookContainer');
+        container.innerHTML = pagesContent.join('');
+    }
+
+    function downloadWord() {
+        if (pagesContent.length === 0) {
+            alert('الكتاب فارغ، يرجى إضافة حيوان واحد على الأقل.');
+            return;
+        }
+
+        let fullDocumentHTML = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head><meta charset='utf-8'><title>كتاب الحياة الفطرية</title></head>
+            <body style="direction: rtl; font-family: 'Amiri', Arial;">
+                ${pagesContent.join('<br style="page-break-before:always">')}
+            </body>
+            </html>
+        `;
+
+        let converted = htmlDocx.asBlob(fullDocumentHTML);
+        saveAs(converted, 'Iraqi_Eco_Wildlife_Book.docx');
+    }
+</script>
+
+</body>
+</html>
+
