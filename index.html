@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة تأليف كتب الحياة الفطرية - عراقي إيكو</title>
-    <!-- مكتبة لتصدير الملفات إلى صيغة Word -->
+    <title>مؤلف كتب الحياة الفطرية التلقائي - عراقي إيكو</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html_docx.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
@@ -23,28 +22,17 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        h1 {
-            text-align: center;
-            color: #2c3e50;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input[type="text"], textarea {
+        h1 { text-align: center; color: #2c3e50; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        textarea {
             width: 100%;
+            height: 120px;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box;
             font-family: inherit;
-        }
-        textarea {
-            height: 100px;
+            box-sizing: border-box;
         }
         button {
             background-color: #27ae60;
@@ -57,15 +45,11 @@
             width: 100%;
             margin-top: 10px;
         }
-        button:hover {
-            background-color: #219653;
-        }
-        /* تصميم صفحة الكتاب المعاينة */
-        .book-preview {
-            margin-top: 40px;
-            border-top: 2px dashed #ccc;
-            padding-top: 20px;
-        }
+        button:hover { background-color: #219653; }
+        .loading { text-align: center; color: #e67e22; font-weight: bold; display: none; margin: 10px 0; }
+        
+        /* تصميم صفحات الكتاب */
+        .book-preview { margin-top: 40px; border-top: 2px dashed #ccc; padding-top: 20px; }
         .page {
             width: 21cm;
             min-height: 29.7cm;
@@ -86,17 +70,8 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 10px;
         }
-        .animal-title {
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-        .animal-latin {
-            text-align: center;
-            font-style: italic;
-            color: #666;
-            margin-bottom: 20px;
-        }
+        .animal-title { text-align: center; font-size: 24px; margin-bottom: 5px; }
+        .animal-latin { text-align: center; font-style: italic; color: #666; margin-bottom: 20px; }
         .image-placeholder {
             width: 100%;
             height: 250px;
@@ -109,157 +84,144 @@
             background-color: #f8f9fa;
             border-radius: 4px;
         }
-        .wiki-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-        .wiki-table th, .wiki-table td {
-            border: 1px solid #ddd;
-            padding: 8px 12px;
-            text-align: right;
-        }
-        .wiki-table th {
-            background-color: #f2f2f2;
-            width: 30%;
-        }
-        .description-text {
-            line-height: 1.8;
-            text-align: justify;
-            margin-bottom: 20px;
-        }
-        .sources-section {
-            margin-top: 30px;
-            font-size: 13px;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
-        }
-        .page-number {
-            position: absolute;
-            bottom: 1.5cm;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 12px;
-            color: #7f8c8d;
-        }
+        .wiki-table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 14px; }
+        .wiki-table th, .wiki-table td { border: 1px solid #ddd; padding: 8px 12px; text-align: right; }
+        .wiki-table th { background-color: #f2f2f2; width: 30%; }
+        .description-text { line-height: 1.8; text-align: justify; margin-bottom: 20px; }
+        .sources-section { margin-top: 30px; font-size: 13px; border-top: 1px solid #ddd; padding-top: 10px; }
+        .page-number { position: absolute; bottom: 1.5cm; left: 50%; transform: translateX(-50%); font-size: 12px; color: #7f8c8d; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>مُصنّف كتب الحياة الفطرية</h1>
-    <p style="text-align: center; color: #666;">أدخل اسم الحيوان وسيقوم النظام بتأليف الصفحات وتنسيقها تلقائياً.</p>
+    <h1>مؤلف كتب الحياة الفطرية (آلي)</h1>
+    <p style="text-align: center; color: #666;">ضع قائمة أسماء الحيوانات (كل اسم في سطر)، وسيقوم الموقع بجلب بياناتها من ويكيبيديا تلقائياً.</p>
 
     <div class="form-group">
-        <label>اسم الحيوان بالعربية:</label>
-        <input type="text" id="arName" placeholder="مثال: التודري الجزري / الورل العراقي">
+        <label>قائمة أسماء الحيوانات:</label>
+        <textarea id="namesList" placeholder="الورل العراقي&#10;النعامة&#10;الذئب الرمادي&#10;قط الجنگل"></textarea>
     </div>
 
-    <div class="form-group">
-        <label>الاسم العلمي (باللاتينية):</label>
-        <input type="text" id="laName" placeholder="مثال: Varanus euphraticus">
-    </div>
-
-    <div class="form-group">
-        <label>التصنيف العلمي (حسب جدول ويكيبيديا - مفصولة بفاصلة مثل: النطاق: حقيقيات النوى, المملكة: الحيوانات):</label>
-        <input type="text" id="taxData" placeholder="المملكة: الحيوانات, الشعبة: الحبليات, الطائفة: الزواحف, الرتبة: الحرشفيات">
-    </div>
-
-    <div class="form-group">
-        <label>الوصف السلوكي والبيئي:</label>
-        <textarea id="descText" placeholder="اكتب أو الصق الوصف الشامل للحيوان وموطنه في البيئة العراقية..."></textarea>
-    </div>
-
-    <div class="form-group">
-        <label>المصادر والمراجع العلمية:</label>
-        <input type="text" id="sourcesText" placeholder="اكتب المصادر مفصولة بفواصل أو أسطر">
-    </div>
-
-    <button onclick="generateBookPage()">إضافة الصفحة إلى الكتاب</button>
+    <button onclick="processAnimalsList()">ابدأ تأليف الكتاب تلقائياً</button>
+    <div id="loadingStatus" class="loading">جاري جلب البيانات من ويكيبيديا وإنشاء الصفحات... يرجى الانتظار</div>
     <button onclick="downloadWord()" style="background-color: #2980b9; margin-top: 10px;">تحميل الكتاب كاملًا (ملف Word)</button>
 
     <div class="book-preview">
         <h3>معاينة صفحات الكتاب:</h3>
         <div id="bookContainer">
-            <p style="color: #888; text-align: center;">لم يتم إضافة صفحات بعد.</p>
+            <p style="color: #888; text-align: center;">لم يتم توليد صفحات بعد.</p>
         </div>
     </div>
 </div>
 
 <script>
-    let pageCounter = 1;
     let pagesContent = [];
 
-    function generateBookPage() {
-        const ar = document.getElementById('arName').value.trim();
-        const la = document.getElementById('laName').value.trim();
-        const tax = document.getElementById('taxData').value.trim();
-        const desc = document.getElementById('descText').value.trim();
-        const sources = document.getElementById('sourcesText').value.trim();
-
-        if (!ar || !la) {
-            alert('يرجى على الأقل إدخال الاسم العربي واللاتيني للحيوان.');
+    async function processAnimalsList() {
+        const text = document.getElementById('namesList').value.trim();
+        if (!text) {
+            alert('يرجى كتابة اسم حيوان واحد على الأقل.');
             return;
         }
 
-        // بناء جدول ويكيبيديا المصغر
-        let tableRows = '';
-        if (tax) {
-            const pairs = tax.split(',');
-            pairs.forEach(pair => {
-                const parts = pair.split(':');
-                if(parts.length === 2) {
-                    tableRows += `<tr><th>${parts[0].trim()}</th><td>${parts[1].trim()}</td></tr>`;
-                }
-            });
+        const names = text.split('\n').map(name => name.trim()).filter(name => name.length > 0);
+        const container = document.getElementById('bookContainer');
+        const loader = document.getElementById('loadingStatus');
+        
+        loader.style.display = 'block';
+        pagesContent = [];
+        container.innerHTML = '';
+
+        for (let i = 0; i < names.length; i++) {
+            loader.innerText = `جاري جلب بيانات الحيوان (${i + 1} من ${names}): ${names[i]}...`;
+            let animalData = await fetchWikiData(names[i]);
+            
+            let pageHTML = `
+                <div class="page">
+                    <div class="header-logo">عراقي إيكو - Iraqi Eco</div>
+                    <h2 class="animal-title">${animalData.title}</h2>
+                    <div class="animal-latin">${animalData.latin}</div>
+                    
+                    <div class="image-placeholder">[ضع صورة الحيوان هنا]</div>
+
+                    <table class="wiki-table">
+                        <tr><th>الاسم الشائع</th><td>${animalData.title}</td></tr>
+                        <tr><th>الاسم العلمي</th><td><i>${animalData.latin}</i></td></tr>
+                        <tr><th>المصدر الرئيسي</th><td>ويكيبيديا الموسوعة الحرة (موسوعة عراقي إيكو)</td></tr>
+                    </table>
+                    
+                    <div class="description-text">
+                        <strong>الوصف والبيئة:</strong><br>
+                        ${animalData.extract}
+                    </div>
+
+                    <div class="sources-section">
+                        <strong>المصادر والمراجع:</strong><br>
+                        - قاعدة بيانات ويكيبيديا المفتوحة.<br>
+                        - أرشيف رصد الحياة الفطرية - عراقي إيكو.
+                    </div>
+
+                    <div class="page-number">صفحة ${i + 1}</div>
+                </div>
+            `;
+            pagesContent.push(pageHTML);
         }
 
-        // هيكل الصفحة الواحدة
-        let pageHTML = `
-            <div class="page">
-                <div class="header-logo">عراقي إيكو - Iraqi Eco</div>
-                <h2 class="animal-title">${ar}</h2>
-                <div class="animal-latin">${la}</div>
-                
-                <div class="image-placeholder">[ضع صورة الحيوان هنا]</div>
-
-                ${tableRows ? `<table class="wiki-table">${tableRows}</table>` : ''}
-                
-                <div class="description-text">
-                    <strong>الوصف والبيئة:</strong><br>
-                    ${desc || 'لا يوجد وصف مضاف.'}
-                </div>
-
-                <div class="sources-section">
-                    <strong>المصادر والمراجع:</strong><br>
-                    ${sources || 'مراجع عامة - عراقي إيكو'}
-                </div>
-
-                <div class="page-number">صفحة ${pageCounter}</div>
-            </div>
-        `;
-
-        pagesContent.push(pageHTML);
-        renderPreview();
-        pageCounter++;
-
-        // تفريغ الحقول لإضافة حيوان جديد
-        document.getElementById('arName').value = '';
-        document.getElementById('laName').value = '';
-        document.getElementById('taxData').value = '';
-        document.getElementById('descText').value = '';
-        document.getElementById('sourcesText').value = '';
+        loader.style.display = 'none';
+        container.innerHTML = pagesContent.join('');
+        alert('تم اكتمال تأليف الكتاب بنجاح!');
     }
 
-    function renderPreview() {
-        const container = document.getElementById('bookContainer');
-        container.innerHTML = pagesContent.join('');
+    async function fetchWikiData(animalName) {
+        try {
+            // البحث في ويكيبيديا العربية
+            let searchUrl = `https://ar.wikipedia.org/w/api.php?action=query&prop=extracts|pageprops&exintro=true&explaintext=true&titles=${encodeURIComponent(animalName)}&format=json&origin=*`;
+            let response = await fetch(searchUrl);
+            let data = await response.json();
+            let pages = data.query.pages;
+            let pageId = Object.keys(pages)[0];
+
+            if (pageId !== "-1") {
+                let page = pages[pageId];
+                let title = page.title;
+                let extract = page.extract ? page.extract.substring(0, 600) + '...' : 'لا يتوفر وصف نصي مفصل حالياً.';
+                
+                // محاولة جلب الاسم اللاتيني (إن وجد في Wikidata أو من خلال استعلام ثانوي)
+                let latin = await fetchLatinName(title);
+
+                return { title: title, latin: latin, extract: extract };
+            } else {
+                return { 
+                    title: animalName, 
+                    latin: 'غير متوفر باللاتينية', 
+                    extract: 'لم يتم العثور على مقالة مطابقة مباشرة بهذا الاسم في أرشيف ويكيبيديا، يرجى التحقق من الإملاء أو إضافة وصف مخصص.' 
+                };
+            }
+        } catch (error) {
+            return { title: animalName, latin: 'خطأ في الاتصال', extract: 'تعذر جلب البيانات تلقائياً.' };
+        }
+    }
+
+    async function fetchLatinName(arTitle) {
+        try {
+            let url = `https://ar.wikipedia.org/w/api.php?action=query&prop=langlinks&lllang=en&titles=${encodeURIComponent(arTitle)}&format=json&origin=*`;
+            let res = await fetch(url);
+            let data = await res.json();
+            let pages = data.query.pages;
+            let pageId = Object.keys(pages)[0];
+            if(pages[pageId] && pages[pageId].langlinks) {
+                let enTitle = pages[pageId].langlinks[0]['*'];
+                // جلب العنوان العلمي أو الإنجليزي المقابل
+                return enTitle;
+            }
+        } catch(e) {}
+        return "اسم علمي قياسي";
     }
 
     function downloadWord() {
         if (pagesContent.length === 0) {
-            alert('الكتاب فارغ، يرجى إضافة حيوان واحد على الأقل.');
+            alert('الكتاب فارغ، يرجى توليد الصفحات أولاً.');
             return;
         }
 
@@ -273,10 +235,9 @@
         `;
 
         let converted = htmlDocx.asBlob(fullDocumentHTML);
-        saveAs(converted, 'Iraqi_Eco_Wildlife_Book.docx');
+        saveAs(converted, 'Iraqi_Eco_Auto_Wildlife_Book.docx');
     }
 </script>
 
 </body>
 </html>
-
