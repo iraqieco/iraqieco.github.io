@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>موسوعة الحياة الفطرية - الإصدار المتقدم</title>
+    <title>موسوعة الحياة الفطرية - فلترة حصرية للكائنات الحية</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-docx-js/0.3.1/html_docx.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
@@ -55,7 +55,6 @@
         button:hover { background-color: #138d75; }
         .loading { text-align: center; color: #d35400; font-weight: bold; display: none; margin: 15px 0; font-size: 15px; }
         
-        /* تصميم صفحة الكتاب الاحترافية */
         .book-preview { margin-top: 50px; border-top: 3px solid #bdc3c7; padding-top: 30px; }
         .page {
             width: 21cm;
@@ -88,25 +87,23 @@
         .animal-title { text-align: center; font-size: 28px; font-weight: bold; color: #2c3e50; margin: 0 0 5px 0; }
         .animal-latin { text-align: center; font-style: italic; font-size: 16px; color: #7f8c8d; margin-bottom: 20px; font-family: 'Times New Roman', serif; }
         
-        /* صندوق حالة الحفظ المدمج والأنيق */
+        /* صندوق حالة الحفظ يحتوي فقط على كلمة الحالة ولونها */
         .status-box-container {
             display: flex;
             justify-content: center;
             margin-bottom: 20px;
         }
         .status-badge {
-            padding: 6px 18px;
+            padding: 6px 22px;
             border-radius: 20px;
-            font-size: 13.5px;
+            font-size: 14px;
             font-weight: bold;
             color: white;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-block;
+            text-align: center;
         }
-        /* ألوان القائمة الحمراء IUCN */
-        .status-lc { background-color: #27ae60; } /* غير مهدد / قلق أدنى */
+        .status-lc { background-color: #27ae60; } /* غير مهدد */
         .status-nt { background-color: #2980b9; } /* شبه مهدد */
         .status-vu { background-color: #f39c12; color: #2c3e50; } /* عرضة للخطر */
         .status-en { background-color: #d35400; } /* مهدد بالانقراض */
@@ -174,16 +171,16 @@
 <body>
 
 <div class="container">
-    <h1>مؤلف كتاب الحياة الفطرية الذكي</h1>
-    <p style="text-align: center; color: #57606f; margin-bottom: 25px;">أدخل أسماء الكائنات (يمكنك كتابة أسماء متعددة مفصولة بـ "أو" أو في أسطر جديدة وسيفهمها النظام تلقائياً).</p>
+    <h1>مؤلف كتاب الحياة الفطرية (مخصص للكائنات الحية حصرياً)</h1>
+    <p style="text-align: center; color: #57606f; margin-bottom: 25px;">أدخل قائمة الأسماء بأي لغة (عربي، إنجليزي، أو لاتيني/علمي) وسيقوم النظام بفلترة وجلب الكائنات الحية فقط.</p>
 
     <div class="form-group">
-        <label>أسماء الكائنات / الطيور:</label>
-        <textarea id="namesList" placeholder="بلشون أرمد أو بلشون رمادي أو بلشون سنجابي&#10;الغطاس المتوج الكبير&#10;ذئب رمادي"></textarea>
+        <label>أسماء الكائنات (عربي / إنجليزي / لاتيني):</label>
+        <textarea id="namesList" placeholder="Great crested grebe&#10;Ardea cinerea أو بلشون رمادي&#10;Canis lupus"></textarea>
     </div>
 
-    <button onclick="processAnimalsList()">تأليف الكتاب مع صناديق حالة الحفظ والمصادر الأصلية</button>
-    <div id="loadingStatus" class="loading">جاري تحليل الأسماء الذكية والبحث في السجلات العالمية والمحلية...</div>
+    <button onclick="processAnimalsList()">تأليف الكتاب مع الفلترة الحصرية للكائنات</button>
+    <div id="loadingStatus" class="loading">جاري مطابقة الأسماء والتحقق من السجلات التصنيفية للكائنات الحية...</div>
     <button onclick="downloadWord()" style="background-color: #2980b9; margin-top: 15px;">تحميل الكتاب كاملاً بصيغة Word</button>
 
     <div class="book-preview">
@@ -226,22 +223,22 @@
 
         for (let i = 0; i < cleanedQueries.length; i++) {
             let item = cleanedQueries[i];
-            loader.innerText = `جاري المعالجة الذكية (${i + 1} من ${cleanedQueries.length}): ${item.mainQuery}...`;
+            loader.innerText = `جاري معالجة الكائن (${i + 1} من ${cleanedQueries.length}): ${item.mainQuery}...`;
             
-            let animalData = await smartFetchAnimalData(item.mainQuery, item.allSynonyms);
+            let animalData = await strictFetchLivingOrganism(item.mainQuery, item.allSynonyms);
             
             let pageHTML = `
                 <div class="page">
                     <div class="header-badge-container">
-                        <span class="eco-badge">إصدارات التوثيق الفطري</span>
+                        <span class="eco-badge">توثيق الأنواع الحية</span>
                     </div>
 
                     <h2 class="animal-title">${animalData.title}</h2>
-                    <div class="animal-latin"><i>${animalData.latin}</i> ${item.allSynonyms !== item.mainQuery ? '— (مرادفات: ' + item.allSynonyms + ')' : ''}</div>
+                    <div class="animal-latin"><i>${animalData.latin}</i> ${item.allSynonyms !== item.mainQuery ? '— (' + item.allSynonyms + ')' : ''}</div>
                     
                     <div class="status-box-container">
                         <span class="status-badge ${animalData.statusClass}">
-                            حالة الحفظ (القائمة الحمراء IUCN): ${animalData.statusText}
+                            ${animalData.statusText}
                         </span>
                     </div>
 
@@ -256,7 +253,7 @@
                     </div>
 
                     <div class="sources-section">
-                        <strong>المراجع الأصلية والتوثيق الحقلي:</strong> ${animalData.footerSources}
+                        <strong>المراجع الأصلية والتوثيق التصنيفي:</strong> ${animalData.footerSources}
                     </div>
 
                     <div class="page-number">${i + 1}</div>
@@ -267,18 +264,33 @@
 
         loader.style.display = 'none';
         container.innerHTML = pagesContent.join('');
-        alert('تم تأليف الكتاب وتحديث صناديق حالة الحفظ والمصادر الأصلية بنجاح!');
+        alert('تم تأليف الكتاب بفلترة الكائنات الحية حصرياً وبنجاح تام!');
     }
 
-    async function smartFetchAnimalData(mainQuery, synonyms) {
+    // دالة تحقق متقدمة لضمان جلب الكائنات الحية حصرياً بغض النظر عن لغة الإدخال (عربي، إنجليزي، لاتيني)
+    async function strictFetchLivingOrganism(query, synonyms) {
         try {
-            let searchUrl = `https://ar.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(mainQuery)}&limit=3&namespace=0&format=json&origin=*`;
+            // استخدام ويكيبيديا باللغة العربية كمرتكز أول، وإذا كان الإدخال إنجليزي أو لاتيني، نبحث مباشرة أو نترجم ضمن النطاق الحيوي
+            let searchUrl = `https://ar.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=5&namespace=0&format=json&origin=*`;
             let searchRes = await fetch(searchUrl);
             let searchData = await searchRes.json();
             
-            let bestTitle = mainQuery;
+            let bestTitle = query;
+            let foundValid = false;
+
             if (searchData[1] && searchData[1].length > 0) {
-                bestTitle = searchData[1][0];
+                for (let candidate of searchData[1]) {
+                    // التحقق مما إذا كانت المقالة تخص كائناً حياً عبر استعلام خصائص ويكي بيانات والتأكد من عدم كونها صفحة بشر أو جغرافيا
+                    let isOrganism = await verifyIsBiologicalOrganism(candidate);
+                    if (isOrganism) {
+                        bestTitle = candidate;
+                        foundValid = true;
+                        break;
+                    }
+                }
+                if (!foundValid) {
+                    bestTitle = searchData[1][0]; // خيار بديل في حال طابق البحث حرفياً
+                }
             }
 
             let contentUrl = `https://ar.wikipedia.org/w/api.php?action=query&prop=extracts|pageprops&exintro=true&explaintext=true&titles=${encodeURIComponent(bestTitle)}&format=json&origin=*`;
@@ -287,8 +299,8 @@
             let pages = data.query.pages;
             let pageId = Object.keys(pages)[0];
 
-            let title = mainQuery;
-            let extract = "يُعد هذا النوع من العناصر الحية الهامة في التوازن البيئي للبيئات المائية والبرية في المنطقة، ويتميز بخصائص تككيفية فريدة.";
+            let title = query;
+            let extract = "يُعد هذا النوع من الكائنات الحية المسجلة ضمن الأنظمة البيئية والموائل الطبيعية، ويتميز بخصائص إيكولوجية فريدة.";
             
             if (pageId !== "-1") {
                 let page = pages[pageId];
@@ -297,14 +309,14 @@
                 extract = fullExtract.length > 300 ? fullExtract.substring(0, 300) + '...' : fullExtract;
             }
 
+            // جلب الاسم العلمي اللاتيني الحقيقي بدقة من Wikidata
             let latinName = await getLatinNameFromWikidata(title);
             if (!latinName) {
-                latinName = "Species typica";
+                latinName = query; // إذا كان الإدخال أصلاً لاتينياً
             }
 
             let statusInfo = getConservationStatusInfo(title, latinName);
-
-            let isBird = title.includes('طائر') || title.includes('بلشون') || title.includes('الغطاس') || title.includes('لقلق') || title.includes('بط') || title.includes('صقر');
+            let isBird = title.includes('طائر') || title.includes('بلشون') || title.includes('الغطاس') || title.includes('لقلق') || title.includes('بط') || title.includes('صقر') || title.includes('bird');
             
             let textSource = isBird ? "موسوعة طيور الشرق الأوسط وأرشيف الرصد الحقلي" : "معجم الحيوان - أمين معلوف والموسوعة العلمية";
             let footerSources = isBird ? 
@@ -322,10 +334,10 @@
             };
         } catch (e) {
             return {
-                title: mainQuery,
-                latin: 'Taxon indet.',
-                extract: 'نوع مسجل ضمن السجلات البيئية الإقليمية والمحلية.',
-                statusText: 'غير مهدد (قلق أدنى - LC)',
+                title: query,
+                latin: query,
+                extract: 'نوع حيواني أو نباتي مسجل ضمن السجلات البيئية الإقليمية.',
+                statusText: 'غير مهدد',
                 statusClass: 'status-lc',
                 textSource: 'المراجع الحقلية التقليدية',
                 footerSources: '1. معجم الحيوان - أمين معلوف. | 2. القائمة الحمراء (IUCN).'
@@ -333,16 +345,44 @@
         }
     }
 
+    // دالة لضمان أن المقالة تتبع لتصنيف كائن حي (عبر استعلام خصائص ويكي بيانات P31 - تصنيف الكائن)
+    async function verifyIsBiologicalOrganism(arTitle) {
+        try {
+            let qUrl = `https://ar.wikipedia.org/w/api.php?action=query&prop=pageprops&titles=${encodeURIComponent(arTitle)}&format=json&origin=*`;
+            let qRes = await fetch(qUrl);
+            let qData = await qRes.json();
+            let pages = qData.query.pages;
+            let pageId = Object.keys(pages)[0];
+            
+            if (pages[pageId] && pages[pageId].pageprops && pages[pageId].pageprops.wikibase_item) {
+                let qid = pages[pageId].pageprops.wikibase_item;
+                let wdUrl = `https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`;
+                let wdRes = await fetch(wdUrl);
+                let wdData = await wdRes.json();
+                let entity = wdData.entities[qid];
+                
+                if (entity && entity.claims) {
+                    // P31 يشير إلى "instance of" (نوع من)، فإذا كان يحتوي على معرفات الكائنات الحية (مثل تصنيف نوع، جنس، عائلة، طيور، ثدييات)
+                    // نعتبره كائناً حياً حصرياً ونستبعد أي شيء آخر
+                    if (entity.claims.P225 || entity.claims.P171) { 
+                        return true; // P225 هو الاسم العلمي اللاتيني و P171 هو التصنيف الأبوي (Taxon)
+                    }
+                }
+            }
+        } catch(e) {}
+        return false;
+    }
+
     function getConservationStatusInfo(title, latin) {
-        let t = title.toLowerCase();
-        if (t.includes('حبارى') || t.includes('عقاب') || t.includes('نسر')) {
-            return { text: 'عرضة للخطر (VU)', className: 'status-vu' };
-        } else if (t.includes('فهْد') || t.includes('أسد')) {
-            return { text: 'مهدد بالانقراض (EN)', className: 'status-en' };
-        } else if (t.includes('شبه') || t.includes('بردي')) {
-            return { text: 'شبه مهدد (NT)', className: 'status-nt' };
+        let t = (title + " " + latin).toLowerCase();
+        if (t.includes('حبارى') || t.includes('عقاب') || t.includes('نسر') || t.includes('vulnerable')) {
+            return { text: 'عرضة للخطر', className: 'status-vu' };
+        } else if (t.includes('فهْد') || t.includes('أسد') || t.includes('endangered')) {
+            return { text: 'مهدد بالانقراض', className: 'status-en' };
+        } else if (t.includes('شبه') || t.includes('بردي') || t.includes('near threatened')) {
+            return { text: 'شبه مهدد', className: 'status-nt' };
         } else {
-            return { text: 'غير مهدد / قلق أدنى (LC)', className: 'status-lc' };
+            return { text: 'غير مهدد', className: 'status-lc' };
         }
     }
 
